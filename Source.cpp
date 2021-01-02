@@ -4,8 +4,6 @@
 using namespace std;
 
 
-
-
 int main() {
 
 	cout << "welcome to tik tak toe!\n\ncreated by me!\nto play to need to know some things...\n1.you first need to choose whether you want to "
@@ -58,7 +56,6 @@ int main() {
 	{
 		throw logic_error("you have entered an invalid player... please try again...");
 	}
-
 	
 
 	short posx = 0;
@@ -225,11 +222,8 @@ int main() {
 		else if(player == 'o'){
 			player = 'x';
 		}
-
 	}
-	
 
-	
 	
 	return 0;
 }
