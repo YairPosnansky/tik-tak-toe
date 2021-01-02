@@ -56,7 +56,7 @@ int main() {
 
 	if (player != 'x' && player != 'o')	
 	{
-		throw logic_error("you entered invalid player... please try again...");
+		throw logic_error("you have entered an invalid player... please try again...");
 	}
 
 	
