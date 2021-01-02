@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -26,7 +25,7 @@ int main() {
 		{"-------|-------|-------"},
 		{"       |       |       "},
 		{"       |       |       "},
-	    {"       |       |       "}
+	        {"       |       |       "}
 	};
 	char actubord[3][3]{
 		{'Z','T','U'},
