@@ -1,229 +1,91 @@
 #include <iostream>
-#include <string>
+#include <vector>
+
+enum class Player { X, O };
+
+const int BOARD_SIZE = 3;
 
 using namespace std;
 
+// Function prototypes
+void initializeBoard(vector<vector<char>>& board);
+void printBoard(const vector<vector<char>>& board);
+bool isMoveValid(const vector<vector<char>>& board, int row, int col);
+bool isBoardFull(const vector<vector<char>>& board);
+bool hasPlayerWon(const vector<vector<char>>& board, char player);
+Player togglePlayer(Player current);
+void makeMove(vector<vector<char>>& board, int row, int col, Player player);
 
 int main() {
+    vector<vector<char>> board(BOARD_SIZE, vector<char>(BOARD_SIZE, ' '));
+    Player currentPlayer = Player::X;
 
-	cout << "welcome to tik tak toe!\n\ncreated by me!\nto play to need to know some things...\n1.you first need to choose whether you want to "
-		<<"be 'x' or 'o'.\n2.every turn you need to choose what position you want to go... \nso let's start!\1\n\n\n\n ";
+    initializeBoard(board);
+    printBoard(board);
 
-	system("title tik tak toe");
+    while (!isBoardFull(board)) {
+        int row, col;
+        cout << "Player " << (currentPlayer == Player::X ? 'X' : 'O') << "'s turn. Enter row and column (0-2): ";
+        cin >> row >> col;
 
-	string boredrep[11][24] =
-	{
-		{"       |       |       "},
-		{"       |       |       "},
-		{"       |       |       "},
-		{"-------|-------|-------"},
-		{"       |       |       "},
-		{"       |       |       "},
-		{"       |       |       "},
-		{"-------|-------|-------"},
-		{"       |       |       "},
-		{"       |       |       "},
-	        {"       |       |       "}
-	};
-	char actubord[3][3]{
-		{'Z','T','U'},
-		{'R','W','Q'},
-		{'G','H','R'}
-	};
+        if (isMoveValid(board, row, col)) {
+            makeMove(board, row, col, currentPlayer);
+            printBoard(board);
 
-	
-	cout << "\t       |       |       \n";
-	cout << "\t       |       |       \n";
-	cout << "\t       |       |       \n";
-	cout << "\t-------|-------|-------\n";
-	cout << "\t       |       |       \n";
-	cout << "\t       |       |       \n";
-	cout << "\t       |       |       \n";
-	cout << "\t-------|-------|-------\n";
-	cout << "\t       |       |       \n";
-	cout << "\t       |       |       \n";
-	cout << "\t       |       |       \n";
+            if (hasPlayerWon(board, currentPlayer == Player::X ? 'X' : 'O')) {
+                cout << "Player " << (currentPlayer == Player::X ? 'X' : 'O') << " wins!" << endl;
+                break;
+            }
 
-	
+            currentPlayer = togglePlayer(currentPlayer);
+        } else {
+            cout << "Invalid move. Try again." << endl;
+        }
+    }
 
-	cout << "\nwho do you want to play first: 'x' or 'o'?";
-	char player;
-	
+    return 0;
+}
 
-	cin >> player;
+void initializeBoard(vector<vector<char>>& board) {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            board[i][j] = ' ';
+        }
+    }
+}
 
-	if (player != 'x' && player != 'o')	
-	{
-		throw logic_error("you have entered an invalid player... please try again...");
-	}
-	
+void printBoard(const vector<vector<char>>& board) {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            cout << board[i][j];
+            if (j < BOARD_SIZE - 1) cout << " | ";
+        }
+        cout << endl;
+        if (i < BOARD_SIZE - 1) cout << "---------" << endl;
+    }
+}
 
-	short posx = 0;
-	unsigned short posy = 0;
-	unsigned short counter = 0;
+bool isMoveValid(const vector<vector<char>>& board, int row, int col) {
+    return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE && board[row][col] == ' ';
+}
 
-	while (counter < 7 + 4- 2)
-	{
-		INVALID_POSITION:
-		cout << "\nposition to move y: ";
-		cin >> posy;
-		cout << "\nposition to move x: ";
-		cin >> posx;
+bool isBoardFull(const vector<vector<char>>& board) {
+    for (const auto& row : board) {
+        for (char cell : row) {
+            if (cell == ' ') return false;
+        }
+    }
+    return true;
+}
 
-		if (posy == 0 && posx == 0)
-		{
-			if (boredrep[posy + 1]->at(3) == 'x' || boredrep[posy + 1]->at(3) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 1]->at(3) = player;
-			actubord[0][0] = player;
-		}
-		else if (posy == 0 && posx == 1)
-		{
-			if (boredrep[posy + 1]->at(11) == 'x' || boredrep[posy + 1]->at(11) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 1]->at(11) = player;
-			actubord[0][1] = player;
-		}
-		else if (posy == 0 && posx == 2)
-		{
-			if (boredrep[posy + 1]->at(19) == 'x' || boredrep[posy + 1]->at(19) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 1]->at(12 + 7) = player;
-			actubord[0][2] = player;
-		}
-		else if (posy == 1 && posx == 0) {
-			if (boredrep[posy + 4]->at(3) == 'x' || boredrep[posy + 4]->at(3) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 4]->at(3) = player;
-			actubord[1][0] = player;
-		}
-		else if (posy == 1 && posx == 1) {
-			if (boredrep[posy + 4]->at(11) == 'x' || boredrep[posy + 4]->at(11) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 4]->at(11) = player;
-			actubord[1][1] = player;
-		}
-		else if (posy == 1 && posx == 2) {
-			if (boredrep[posy + 4]->at(19) == 'x' || boredrep[posy + 4]->at(19) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 4]->at(12 + 3 + 4) = player;
-			actubord[1][2] = player;
-		}
-		else if (posy == 2 && posx == 0) {
-			if (boredrep[posy + 7]->at(3) == 'x' || boredrep[posy + 7]->at(3) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 7]->at(3) = player;
-			actubord[2][0] = player;
-		}
-		else if (posy == 2 && posx == 1) {
-			if (boredrep[posy + 7]->at(11) == 'x' || boredrep[posy + 7]->at(11) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 7]->at(11) = player;
-			actubord[2][1] = player;
-		}
-		else if (posy == 2 && posx == 2) {
-			if (boredrep[posy + 7]->at(19) == 'x' || boredrep[posy + 7]->at(19) == 'o')
-			{
-				goto INVALID_POSITION;
-			}
-			boredrep[posy + 7]->at(19) = player;
-			actubord[2][2] = player;
-		}
+bool hasPlayerWon(const vector<vector<char>>& board, char player) {
+    // Implement your winning logic here
+}
 
-		
-		system("cls");
+Player togglePlayer(Player current) {
+    return (current == Player::X) ? Player::O : Player::X;
+}
 
-		for (size_t i = 0; i < 11; i++)
-		{
-			cout << "\t";
-			for (size_t ii = 0; ii < 24; ii++) {
-				
-				cout << boredrep[i][ii];
-				
-			}
-			
-			cout << "\n";
-			
-		}
-
-		for (size_t tt = 0; tt < 3; tt++)
-		{
-			for (size_t r = 0; r < 3; r++)
-			{
-				if (actubord[tt][0] == 'x' && actubord[tt][1] == 'x' && actubord[tt][2] == 'x')
-				{
-					cout << "congratulations player: 'x' won!!!";
-					cin.ignore();
-					cin.get();
-					return 0;
-				}
-				else if (actubord[0][0] == 'x' && actubord[1][1] == 'x' && actubord[2][2] == 'x' || actubord[2][0] == 'x' && actubord[1][1] == 'x' && actubord[0][2] == 'x')
-				{
-					cout << "congratulations player: 'x' won!!!";
-					cin.ignore();
-					cin.get();
-					return 0;
-				}
-				else if (actubord[0][r] == 'x' && actubord[1][r] == 'x' && actubord[2][r] == 'x')
-				{
-					cout << "congratulations player: 'x' won!!!";
-					
-					cin.ignore();
-					cin.get();
-					return 0;
-				}
-				else if(actubord[tt][0] == 'o' && actubord[tt][1] == 'o' && actubord[tt][2] == 'o')
-				{
-					cout << "congratulations player: 'o' won!!!";
-					cin.ignore();
-					cin.get();
-					return 0;
-				}
-				else if (actubord[0][0] == 'o' && actubord[1][1] == 'o' && actubord[2][2] == 'o' || actubord[2][0] == 'o' && actubord[1][1] == 'o' && actubord[0][2] == 'o')
-				{
-					cout << "congratulations player: 'o' won!!!";
-					cin.ignore();
-					cin.get();
-					return 0;
-				}
-				else if (actubord[0][r] == 'o' && actubord[1][r] == 'o' && actubord[2][r] == 'o')
-				{
-					cout << "congratulations player: 'o' won!!!";
-					cin.ignore();
-					cin.get();
-					return 0;
-				}
-			}
-			
-			
-		}
-
-		counter++;
-		if (player == 'x')
-		{
-			player = 'o';
-		}
-		else if(player == 'o'){
-			player = 'x';
-		}
-	}
-
-	
-	return 0;
+void makeMove(vector<vector<char>>& board, int row, int col, Player player) {
+    board[row][col] = (player == Player::X) ? 'X' : 'O';
 }
